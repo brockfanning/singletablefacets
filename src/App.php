@@ -151,14 +151,14 @@ class App
         $query->setParameters($params);
         $results = $query->execute()->fetchAll();
 
-        if (empty($results[0]['index_name'])) {
+        if (empty($results[0]['index_name']) && empty($results[0]['INDEX_NAME'])) {
             $err = sprintf('The db table must have a %s column with a FULLTEXT index.', $keywordColumn);
             throw new \Exception($err);
         }
 
         // Also, save a list of other columns that are part of the same index,
         // since we'll need that info later.
-        $indexName = $results[0]['index_name'];
+        $indexName = (!empty($results[0]['index_name'])) ? $results[0]['index_name'] : $results[0]['INDEX_NAME'];
         $query = $this->getDb()->createQueryBuilder();
         $query
             ->from('information_Schema.STATISTICS')
